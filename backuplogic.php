@@ -1,12 +1,12 @@
 <?php
 // Database configuration
 $host = "localhost";
-$username = "root"; // $username = "id19669885_go2gro"; <-- username in the web application
-$password = "";
-$databasename = "id19669885_go2gro_db"; // This variable can be of any database
+$user = "id19669885_go2gro"; // $username = "id19669885_go2gro"; <-- username in the web application
+$pwd = "SWE20001_g72022";
+$sql_db = "id19669885_go2gro_db"; // This variable can be of any database 
 
 // Connect to the database
-$conn = mysqli_connect($host, $username, $password, $databasename);
+$conn = mysqli_connect($host, $user, $pwd, $sql_db);
 
 // Get all of the aable names from the database
 $tables = array();
