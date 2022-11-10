@@ -16,6 +16,11 @@ $_SESSION['db_Msg']="";
         $data= htmlspecialchars($data);
         return $data;
       }
+$conn = @mysqli_connect($host,
+$user,
+$pwd,
+$sql_db
+);
 
 if (!isset($_POST["submitButton"])) {
         header("location:addrecord2.php");
@@ -35,6 +40,14 @@ $product_id =sanitise_input($_POST["product_id"]);
         else if (!preg_match("/^[A-Z]{3}[\d]{3}$/",$product_id)) {
          $err_Msg .= "<p>Product ID must only have 3 capital letters and 3 numbers.</p>\n";
         }
+        else 
+        {
+            $sql_check_details = "SELECT * FROM stock WHERE stock_id = '$product_id'";
+            $result = @mysqli_query($conn, $sql_check_details);
+            if (!@mysqli_num_rows($result)) {
+                        $err_Msg .= "<p>Product does not exist.</p>";
+                    }
+        }
 }
 
 $product =sanitise_input($_POST["product"]);
@@ -45,12 +58,17 @@ $product =sanitise_input($_POST["product"]);
          $err_Msg .= "<p>Last name can only contain max 25 alpha characters.</p>\n";
         }
 
- $fullname =sanitise_input($_POST["fullname"]);       
-        if ($fullname=="") {
+ $username =sanitise_input($_POST["username"]);       
+        if ($username=="") {
          $err_Msg .= "<p>Please enter the name of purchaser.</p>\n";
         }
-        else if (!preg_match("/^[a-zA-Z\s]{2,40}$/",$fullname)) {
-         $err_Msg .= "<p>Name can only contain max 40 alpha characters.</p>\n";
+        else
+        {
+                    $sql_check_details = "SELECT * FROM users WHERE username = '$username'";
+                    $result = @mysqli_query($conn, $sql_check_details);
+                    if (!@mysqli_num_rows($result)) {
+                        $err_Msg .= "<p>Username of purchaser is incorrect or does not exist.</p>";
+                    }
         }
 $date = sanitise_input($_POST["date"]);
         if ($date=="") {
@@ -65,11 +83,27 @@ $quantity =sanitise_input($_POST["quantity"]);
         }
         else if ($quantity < 1 || $quantity > 10){
          $err_Msg .= "<p class='align-center'>Quantity sold must only be within 1 to 10.</p>\n";
-       }     
+       }
+       else 
+        {
+            $sql_check_details = "SELECT stock_quantity FROM stock WHERE stock_id = '$product_id'";
+            $result = @mysqli_query($conn, $sql_check_details);
+            if (@mysqli_num_rows($result)) {
+                        $record = mysqli_fetch_assoc ($result);
+                        if ($record['stock_quantity'] < 0)
+                        {
+                            $err_Msg .= "There is no stock left. Please restock first";
+                        }
+                        else if($record['stock_quantity'] < $quantity)
+                        {
+                            $err_Msg .= "Quantity in stock is less than quantity to be denoted";
+                        }
+                    }
+        }   
 
     $_SESSION['product_id'] = $product_id;
     $_SESSION['product'] = $product;
-    $_SESSION['fullname'] = $fullname;
+    $_SESSION['username'] = $username;
     $_SESSION['date'] = $date;
     $_SESSION['quantity'] = $quantity;
  if ($err_Msg !=""){
@@ -81,23 +115,20 @@ header("location:addrecord2.php"); //pass the error to fix_order
 exit();
 }
 
-$conn = @mysqli_connect($host,
-$user,
-$pwd,
-$sql_db
-);
+
 
 $db_Msg="";
 
+$updated_stock = $record['stock_quantity']-$quantity;
 if (!$conn) {
 // Displays an error message
 $db_Msg= "<p>Unable to connect to database.</p>"; // not in production script
 } else {
     $query = "CREATE TABLE IF NOT EXISTS salerecords (
                     sale_id INT AUTO_INCREMENT PRIMARY KEY, 
-                    sale_product_id TEXT(6) NOT NULL,
-                    sale_product TEXT(25) NOT NULL,
-                    sale_member_name text(40) NOT NULL,
+                    sale_product_id CHAR(6) NOT NULL,
+                    sale_product varchar(100) NOT NULL,
+                    sale_member_username text(40) NOT NULL,
                     sale_date text(10) NOT NULL,
                     sale_quantity int(2) NOT NULL
                     );";
@@ -108,22 +139,33 @@ $result = mysqli_query($conn, $query);
 if ($result) {
 
 $sale_record = 'salerecords';
-        $query = "INSERT into $sale_record ( sale_product_id, sale_product, sale_member_name, sale_date, sale_quantity)
-        values ('$product_id', '$product', '$fullname', '$date', '$quantity');";
+        $query = "INSERT into $sale_record ( sale_product_id, sale_product, sale_member_username, sale_date, sale_quantity)
+        values ('$product_id', '$product', '$username', '$date', '$quantity');";
 
 
  $insert_result = mysqli_query ($conn, $query);
  if ($insert_result) {   //   insert successfully 
-                $db_Msg="<p>New sales record has been registered into the database.</p>"
+
+ $db_Msg="<p>New sales record has been registered into the database.</p>"
                         . "<table class='saleTable'><tr><th>Item</th><th>Value</th></tr>"
                         . "<tr><th>Register ID:</th><td>" . mysqli_insert_id($conn) . "</td></tr>"
                         . "<tr><th>Product ID:</th><td>$product_id</td></tr>"
                         . "<tr><th>Product:</th><td>$product</td></tr>"
-                        . "<tr><th>Member Name:</th><td>$fullname</td></tr>"
+                        . "<tr><th>Member Username:</th><td>$username</td></tr>"
                         . "<tr><th>Date:</th><td>$date</td></tr>"
                         . "<tr><th>Quantity:</th><td>$quantity</td></tr>"
                         . "</table>";  // you can display more information 
-                        } 
+    
+    $update_query = "UPDATE stock SET stock_quantity = '$updated_stock', last_restock_date = '$date' where stock_id = '$product_id'";
+    $update_result = mysqli_query($conn, $update_query);
+
+    if($update_result)
+    {}
+                        else 
+                        {
+                            $db_Msg.= "<p>Update stock unsuccessful.</p>";
+                        }
+    } 
     else {
                 $db_Msg= "<p>Insert  unsuccessful.</p>";
     }

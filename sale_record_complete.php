@@ -24,6 +24,6 @@ session_start();
                 echo $_SESSION["db_Msg"];
         }        ?>
 </fieldset>
-<input type="button" name="return_addrecord" onclick="location='addrecord2.php'" value="Return">
+<input type="button" name="return_addrecord" onclick="location='addrecord1.php'" value="Return">
 </body>
 </html>    

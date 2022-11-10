@@ -1,13 +1,14 @@
 <?php  
  session_start();
-
+if (!isset($_SESSION['err_Msg'])) 
+{
+header("location:addrecord1.php");
+exit();// terminiate 
+}
         // **********************   from process_order.php
         // display error message  
-        if (isset($_SESSION["err_Msg"]))    // first name
-                $err_Msg=$_SESSION["err_Msg"];
-        else 
-                $err_Msg="";
-        // get values from session
+         // display error message  
+        
        
         if (isset($_SESSION["product_id"]))    // first name
                 $product_id=$_SESSION["product_id"];
@@ -19,10 +20,10 @@
         else 
                 $product="";
 
-        if (isset($_SESSION["fullname"])) //email
-                $fullname=$_SESSION["fullname"];
+        if (isset($_SESSION["username"])) //email
+                $username=$_SESSION["username"];
         else 
-                $fullname="";
+                $username="";
 
         if (isset($_SESSION["date"])) //email
                 $date=$_SESSION["date"];
@@ -39,7 +40,7 @@
 
 <head> 
 
-<title> Add Sales Record / Receipt </title>
+<title> Fix Sales Records </title>
 
 <link rel = "stylesheet" href = "style.css" type="text/css">
 
@@ -47,7 +48,7 @@
 
 <body>
 
-<h1> Add Sales Record / Receipt </h1>
+<h1> Fix Sales Record </h1>
 
 <form action="recordprocess.php" method = "post" id="regform" novalidate="novalidate">
   <fieldset id="add_records">
@@ -61,7 +62,7 @@
        
       </p>
         <p><label>Member:</label>
-          <input type="text" name="fullname" id="fullname" size="40" value="<?php echo $fullname; ?>" >
+          <input type="text" name="username" id="username" size="40" value="<?php echo $username; ?>" >
        
        </p>
          <p><label>Date:</label>
@@ -74,9 +75,14 @@
        </p>
        <input type="submit" id="submitButton" name="submitButton"value="Add Sales Records" />
       <input type= "reset" value="Reset Form"/>
-      <?php echo $err_Msg; ?>
+
+      <?php print_r($_SESSION['err_Msg']);
+        // get values from session ?>
   </fieldset>
 </form>
+ <form method="POST" action="main_page.php"> 
+        <button type="submit" class="btn btn-primary mb-3">Back to Main Menu</button>
+    </form>
 
 </body>
 
