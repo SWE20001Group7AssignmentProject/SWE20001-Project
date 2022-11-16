@@ -2,7 +2,7 @@
 // Database configuration
 $host = "localhost";
 $username = "root"; // $username = "id19669885_go2gro"; <-- username in the web application
-$password = "";
+$password = "SWE20001_g72022";
 $databasename = "id19669885_go2gro_db"; // This variable can be of any database
 
 // Connect to the database
