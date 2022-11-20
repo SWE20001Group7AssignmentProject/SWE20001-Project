@@ -55,7 +55,7 @@ if(!empty($sqlScript))
 {
     // Save the dumped data to an SQL file
     $t = time();
-    $sqlbackup = $databasename . 'backup_' . date("d-m-y",$t) . '.sql';
+    $sqlbackup = $sql_db . 'backup_' . date("d-m-y",$t) . '.sql';
     $fileHandler = fopen($sqlbackup, 'w+');
     $number_of_lines = fwrite($fileHandler, $sqlScript);
     fclose($fileHandler); 

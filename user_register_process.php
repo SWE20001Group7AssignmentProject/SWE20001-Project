@@ -25,6 +25,7 @@ function sanitise_input($data) {
 
 $register_time = date("d/m/Y h:i:sa");             //get the time by sever using dd/mm/yy hour:minutes:second formula
 $register_status = "PENDING";
+$register_member_status = "EMPLOYEE";
 
 if (!isset($_POST["submitButton"])) {
         header("location:user_register.php");
@@ -131,7 +132,8 @@ $db_Msg= "<p>Unable to connect to database.</p>"; // not in production script
                     info_age int(20),
                     info_email text(20),
                     info_phonenumber text(20),
-                    info_password text(20)
+                    info_password text(20),
+                    member_status TEXT(20)
                     );";
 
 $result = mysqli_query($conn, $query);
@@ -140,8 +142,9 @@ $result = mysqli_query($conn, $query);
 if ($result) {
 
 $sql_table = 'logins';
-		$query = "INSERT into $sql_table (register_time, register_status, info_firstname, info_lastname, info_age, info_email, info_phonenumber, info_password)
-		values ('$register_time', '$register_status', '$firstname', '$lastname', '$age', '$email', '$phonenumber', '$password');";
+		$query = "INSERT into $sql_table (register_time, register_status, info_firstname, info_lastname, info_age, info_email, info_phonenumber, info_password, member_status)
+		values ('$register_time', '$register_status', '$firstname', '$lastname', '$age', '$email', '$phonenumber', '$password', 
+            '$register_member_status');";
 
 
  $insert_result = mysqli_query ($conn, $query);
@@ -156,6 +159,7 @@ $sql_table = 'logins';
                         . "<tr><th>Phone number:</th><td>$phonenumber</td></tr>"
                         . "<tr><th>Register time:</th><td>$register_time</td></tr>"
                         . "<tr><th>register status:</th><td>$register_status</td></tr>"
+                        . "<tr><th>member status:</th><td>$register_member_status</td></tr>"
                         . "</table>";  // you can display more information 
                         } 
     else {

@@ -23,9 +23,9 @@ session_start();
     <title>Go2Grocer</title>
 </head>
 <body>
-        <h2><?php echo "Welcome, " . $_SESSION['info_firstname']; ?></h2>
+        <h1><?php echo "Welcome, " . $_SESSION['info_firstname']; ?></h1>
 
-        <form action="main_page.php" method="post">
+        <form action="main_page_manager.php" method="post">
         <fieldset class="enquire_form">
             <h2>Search Sales Record by:</h2>
             <!-- search by user firstname and lastname -->
@@ -55,9 +55,20 @@ session_start();
         </fieldset>
     </form>
 <fieldset>
+
+    <form action="edit_sales.php" method="post">
+        <p>
+             <label>Sale Record ID: <input type="text" id= "record_id" name="record_id" maxlength="6" ></label>
+             <input class="button" type="submit" value="Search" >
+             </p>
+     </form>
+
      <p>
     <input type="button" name="go_to_add_record" onclick="location='addrecord1.php'" value="Add sale records">
-    <input type="button" name="go_to_view_stock" onclick="location='stock.php'" value="View Stock">
+    <input type="button" name="go_to_view_stock" onclick="location='stock_manager.php'" value="View Stock">
+    <input type="button" name="go_to_update_member" onclick="location='updateMember.php'" value="Change User Status">
+    <input type="button" name="go_to_backup_database" onclick="location='backuppage.php'" value="Backup Database">
+    <input type="button" name="download_csv" onclick="location='gensalespage.php'" value="Generate CSV">
     </p>
 <?php 
    

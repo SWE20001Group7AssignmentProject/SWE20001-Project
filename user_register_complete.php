@@ -9,6 +9,7 @@ session_start();
         <meta name="keywords"    content="Assignment, Swinburne, class" />
         <meta name="author"      content="Ryan Term Zhi Jie" /> 
         <link rel="stylesheet" type="text/css" href="css/table.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
         <title>Register Complete</title>
   
 </head>

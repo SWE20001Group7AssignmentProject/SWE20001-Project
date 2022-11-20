@@ -1,14 +1,14 @@
-<?php  
- session_start();
-if (!isset($_SESSION['err_Msg'])) 
-{
-header("location:addrecord1.php");
-exit();// terminiate 
-}
-        // **********************   from process_order.php
-        // display error message  
-         // display error message  
-        
+<?php
+session_start();
+   if (!isset($_SESSION['info_firstname'])) 
+   {// not from process_order.php, redirection
+        header("location:login_page.php");
+        echo "PLease log in again";
+        exit();
+    }
+
+    print_r($_SESSION['err_Msg']);
+        // get values from session
        
         if (isset($_SESSION["product_id"]))    // first name
                 $product_id=$_SESSION["product_id"];
@@ -35,26 +35,22 @@ exit();// terminiate
         else 
                 $quantity="";
 ?>
- 
-<!doctype html>
-
-<head> 
-
-<title> Fix Sales Records </title>
-
-<link rel="stylesheet" type="text/css" href="css/style.css">
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/table.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>Go2Grocer</title>
 </head>
-
 <body>
 
-<h1> Fix Sales Record </h1>
-
-<form action="recordprocess.php" method = "post" id="regform" novalidate="novalidate">
+     <form action="edit_sales_process.php" method = "post" >
   <fieldset id="add_records">
-    <legend>Record Details</legend>
+    <legend>Edit Record Details</legend>
       <p><label>Product ID:</label>
-          <input type="text" name="product_id" id="product_id" size="6" value="<?php echo $product_id; ?>" >
+          <input type="text" name="product_id" id="product_id" size="6" value="<?php echo $product_id; ?>">
           
        </p>
       <p><label>Product:</label>
@@ -73,17 +69,11 @@ exit();// terminiate
           <input type="text" name="quantity" id="quantity" size="2" value="<?php echo $quantity; ?>" >
          
        </p>
-       <input type="submit" id="submitButton" name="submitButton"value="Add Sales Records" />
+       <input type="submit" id="submitButton" name="submitButton" />
       <input type= "reset" value="Reset Form"/>
-
-      <?php print_r($_SESSION['err_Msg']);
-        // get values from session ?>
+      <input type="button" name="return" onclick="location='main_page_manager.php'" value="Back">
   </fieldset>
 </form>
- <form method="POST" action="main_page_manager.php"> 
-        <button type="submit" class="btn btn-primary mb-3">Back to Main Menu</button>
-    </form>
 
 </body>
-
 </html>
